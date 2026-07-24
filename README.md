@@ -56,6 +56,23 @@ Possible starting points:
 - shell command planning
 - structured research over local files
 
+## Project Structure
+
+The Python package is organized around small harness responsibilities:
+
+- `agents`: task-specific control loops
+- `models`: language model runtime adapters
+- `tools`: controlled tool interfaces
+- `prompts`: prompt templates and assembly
+- `runners`: CLI-executed workflows
+- `validation`: output checks and retry decisions
+- `evaluators`: experiment scoring helpers
+- `logging`: structured logs and replay support
+- `config`: configuration loading and validation
+
+See [docs/architecture.md](docs/architecture.md) for the current architecture
+notes.
+
 ## Goal
 
 The goal is to test whether a focused harness can extract more reliable behavior
