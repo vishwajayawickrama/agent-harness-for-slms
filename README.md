@@ -56,6 +56,42 @@ Possible starting points:
 - shell command planning
 - structured research over local files
 
+The first implemented workflow is repository summarization through the CLI.
+
+## Usage
+
+Install dependencies:
+
+```bash
+uv sync
+```
+
+Install Ollama and pull the default small coding model:
+
+```bash
+ollama pull qwen2.5-coder:1.5b
+```
+
+Preview the planned read-only shell commands:
+
+```bash
+uv run agent-harness-for-slms summarize . --dry-run
+```
+
+Generate a repository summary with local Ollama:
+
+```bash
+uv run agent-harness-for-slms summarize . --yes
+```
+
+Write the summary to a file:
+
+```bash
+uv run agent-harness-for-slms summarize . --yes --output reports/summary.md
+```
+
+The command writes structured JSONL run logs to `.harness/logs/` by default.
+
 ## Project Structure
 
 The Python package is organized around small harness responsibilities:
@@ -72,6 +108,9 @@ The Python package is organized around small harness responsibilities:
 
 See [docs/architecture.md](docs/architecture.md) for the current architecture
 notes.
+
+See [docs/v1-repo-summarizer.md](docs/v1-repo-summarizer.md) for the V1
+repository summarizer behavior.
 
 ## Goal
 
