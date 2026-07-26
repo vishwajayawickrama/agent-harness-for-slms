@@ -204,8 +204,11 @@ class FileReaderTool:
                 return False
             if not mime_type.startswith("text/"):
                 return True
+            return False
 
-        return bool(content_sample and b"\x00" in content_sample)
+        if content_sample and b"\x00" in content_sample:
+            return True
+        return False
 
     def _decode(self, raw_bytes: bytes, encoding: str) -> str:
         try:
