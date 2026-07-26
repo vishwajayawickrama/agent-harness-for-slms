@@ -19,3 +19,7 @@ class ModelError(HarnessError):
 
 class SummaryValidationError(HarnessError):
     """Raised when model output fails summary validation."""
+
+
+class FilePolicyError(HarnessError):
+    """Raised when a file read violates policy constraints."""
