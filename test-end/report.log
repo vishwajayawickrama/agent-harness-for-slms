@@ -1,0 +1,172 @@
+        Reads existing text file ...   [32mPASS  [0mReads existing text file
+        Reads empty file ...   [32mPASS  [0mReads empty file
+        Missing file returns not-found ...   [32mPASS  [0mMissing file returns not-found
+        Reads file with Unicode content ...   [32mPASS  [0mReads file with Unicode content
+        Reads file in nested subdirectory ...   [32mPASS  [0mReads file in nested subdirectory
+        Reads file with newlines ...   [32mPASS  [0mReads file with newlines
+        Reads file with trailing whitespace ...   [32mPASS  [0mReads file with trailing whitespace
+        Denies direct parent traversal ../etc/passwd ...   [32mPASS  [0mDenies direct parent traversal ../etc/passwd
+        Denies deep nested traversal ...   [32mPASS  [0mDenies deep nested traversal
+        Denies symlink pointing outside repo ...   [32mPASS  [0mDenies symlink pointing outside repo
+        Denies symlink chain pointing outside ...   [32mPASS  [0mDenies symlink chain pointing outside
+        Allows dot-dot within repo bounds ...   [32mPASS  [0mAllows dot-dot within repo bounds
+        Denies absolute path ...   [32mPASS  [0mDenies absolute path
+        Detects .png as binary ...   [32mPASS  [0mDetects .png as binary
+        Detects .zip as binary ...   [32mPASS  [0mDetects .zip as binary
+        Detects .pdf as binary ...   [32mPASS  [0mDetects .pdf as binary
+        Detects .exe as binary ...   [32mPASS  [0mDetects .exe as binary
+        Detects .dll as binary ...   [32mPASS  [0mDetects .dll as binary
+        Detects .ico as binary ...   [32mPASS  [0mDetects .ico as binary
+        Detects .pyc as binary ...   [32mPASS  [0mDetects .pyc as binary
+        Detects extensionless file with null bytes as binary ...   [32mPASS  [0mDetects extensionless file with null bytes as binary
+        Extensionless file without nulls is text ...   [32mPASS  [0mExtensionless file without nulls is text
+        JSON is not detected as binary ...   [32mPASS  [0mJSON is not detected as binary
+        JavaScript is not detected as binary ...   [32mPASS  [0mJavaScript is not detected as binary
+        XML is not detected as binary ...   [32mPASS  [0mXML is not detected as binary
+        YAML is not detected as binary ...   [32mPASS  [0mYAML is not detected as binary
+        TOML is not detected as binary ...   [32mPASS  [0mTOML is not detected as binary
+        Detects .svg as binary (by extension) ...   [32mPASS  [0mDetects .svg as binary (by extension)
+        Python file is not binary ...   [32mPASS  [0mPython file is not binary
+        Oversized text file is denied ...   [32mPASS  [0mOversized text file is denied
+        Oversized binary file is denied (size before binary check) ...   [32mPASS  [0mOversized binary file is denied (size before binary check)
+        File at exact size limit is allowed ...   [32mPASS  [0mFile at exact size limit is allowed
+        File just under size limit is allowed ...   [32mPASS  [0mFile just under size limit is allowed
+        File one byte over limit is denied ...   [32mPASS  [0mFile one byte over limit is denied
+        Zero-byte file at zero limit is allowed ...   [32mPASS  [0mZero-byte file at zero limit is allowed
+        Command-level max_chars truncates output ...   [32mPASS  [0mCommand-level max_chars truncates output
+        Tool-level max_output_chars truncates output ...   [32mPASS  [0mTool-level max_output_chars truncates output
+        Effective truncation limit is min(tool, command) ...   [32mPASS  [0mEffective truncation limit is min(tool, command)
+        Truncation marker reserved within limit ...   [32mPASS  [0mTruncation marker reserved within limit
+        Short content is not truncated ...   [32mPASS  [0mShort content is not truncated
+        Content at exact limit is not truncated ...   [32mPASS  [0mContent at exact limit is not truncated
+        Reads UTF-8 file correctly ...   [32mPASS  [0mReads UTF-8 file correctly
+        ASCII encoding falls back with replacement ...   [32mPASS  [0mASCII encoding falls back with replacement
+        Reads UTF-16LE file correctly ...   [32mPASS  [0mReads UTF-16LE file correctly
+        Reads Latin-1 file correctly ...   [32mPASS  [0mReads Latin-1 file correctly
+        Invalid encoding name falls back to UTF-8 ...   [32mPASS  [0mInvalid encoding name falls back to UTF-8
+        Reads UTF-8 BOM file without stripping BOM ...   [32mPASS  [0mReads UTF-8 BOM file without stripping BOM
+        Directory path raises FilePolicyError ...   [32mPASS  [0mDirectory path raises FilePolicyError
+        Deep directory path raises FilePolicyError ...   [32mPASS  [0mDeep directory path raises FilePolicyError
+        Missing file in subdirectory returns not-found ...   [32mPASS  [0mMissing file in subdirectory returns not-found
+        Symlink to outside file is denied ...   [32mPASS  [0mSymlink to outside file is denied
+        Symlink to directory raises FilePolicyError ...   [32mPASS  [0mSymlink to directory raises FilePolicyError
+        Empty path is rejected by Pydantic ...   [32mPASS  [0mEmpty path is rejected by Pydantic
+        Symlink swap attack is denied ...   [32mPASS  [0mSymlink swap attack is denied
+        Repeated reads return consistent results ...   [32mPASS  [0mRepeated reads return consistent results
+        Reads large text file without crashing ...   [32mPASS  [0mReads large text file without crashing
+        Reads 100 small files sequentially ...   [32mPASS  [0mReads 100 small files sequentially
+        Reads file with very long filename ...   [32mPASS  [0mReads file with very long filename
+        Reads file with Unicode filename ...   [32mPASS  [0mReads file with Unicode filename
+        Reads file with spaces in name ...   [32mPASS  [0mReads file with spaces in name
+        Reads hidden file (.env) ...   [32mPASS  [0mReads hidden file (.env)
+        Reads .gitkeep file ...   [32mPASS  [0mReads .gitkeep file
+        FileReadCommand has correct defaults ...   [32mPASS  [0mFileReadCommand has correct defaults
+        FileReadCommand accepts custom values ...   [32mPASS  [0mFileReadCommand accepts custom values
+        FileReadResult serializes/deserializes ...   [32mPASS  [0mFileReadResult serializes/deserializes
+        FileReaderTool accepts custom limits ...   [32mPASS  [0mFileReaderTool accepts custom limits
+        FileReaderTool has correct defaults ...   [32mPASS  [0mFileReaderTool has correct defaults
+======================================================================
+  FILE READER TOOL — COMPREHENSIVE TEST SUITE
+  Started: 2026-07-26 15:48:18 UTC
+======================================================================
+
+
+======================================================================
+  FILE READER TOOL — COMPREHENSIVE TEST REPORT
+  Run: 2026-07-26 15:48:18 UTC
+======================================================================
+
+  [Basic]  7/7 passed
+    ✓  Reads existing text file
+    ✓  Reads empty file
+    ✓  Missing file returns not-found
+    ✓  Reads file with Unicode content
+    ✓  Reads file in nested subdirectory
+    ✓  Reads file with newlines
+    ✓  Reads file with trailing whitespace
+
+  [Binary Detection]  16/16 passed
+    ✓  Detects .png as binary
+    ✓  Detects .zip as binary
+    ✓  Detects .pdf as binary
+    ✓  Detects .exe as binary
+    ✓  Detects .dll as binary
+    ✓  Detects .ico as binary
+    ✓  Detects .pyc as binary
+    ✓  Detects extensionless file with null bytes as binary
+    ✓  Extensionless file without nulls is text
+    ✓  JSON is not detected as binary
+    ✓  JavaScript is not detected as binary
+    ✓  XML is not detected as binary
+    ✓  YAML is not detected as binary
+    ✓  TOML is not detected as binary
+    ✓  Detects .svg as binary (by extension)
+    ✓  Python file is not binary
+
+  [Encoding]  6/6 passed
+    ✓  Reads UTF-8 file correctly
+    ✓  ASCII encoding falls back with replacement
+    ✓  Reads UTF-16LE file correctly
+    ✓  Reads Latin-1 file correctly
+    ✓  Invalid encoding name falls back to UTF-8
+    ✓  Reads UTF-8 BOM file without stripping BOM
+
+  [Error Handling]  6/6 passed
+    ✓  Directory path raises FilePolicyError
+    ✓  Deep directory path raises FilePolicyError
+    ✓  Missing file in subdirectory returns not-found
+    ✓  Symlink to outside file is denied
+    ✓  Symlink to directory raises FilePolicyError
+    ✓  Empty path is rejected by Pydantic
+
+  [Models]  5/5 passed
+    ✓  FileReadCommand has correct defaults
+    ✓  FileReadCommand accepts custom values
+    ✓  FileReadResult serializes/deserializes
+    ✓  FileReaderTool accepts custom limits
+    ✓  FileReaderTool has correct defaults
+
+  [Path Traversal]  6/6 passed
+    ✓  Denies direct parent traversal ../etc/passwd
+    ✓  Denies deep nested traversal
+    ✓  Denies symlink pointing outside repo
+    ✓  Denies symlink chain pointing outside
+    ✓  Allows dot-dot within repo bounds
+    ✓  Denies absolute path
+
+  [Size Limits]  6/6 passed
+    ✓  Oversized text file is denied
+    ✓  Oversized binary file is denied (size before binary check)
+    ✓  File at exact size limit is allowed
+    ✓  File just under size limit is allowed
+    ✓  File one byte over limit is denied
+    ✓  Zero-byte file at zero limit is allowed
+
+  [Stress]  7/7 passed
+    ✓  Reads large text file without crashing
+    ✓  Reads 100 small files sequentially
+    ✓  Reads file with very long filename
+    ✓  Reads file with Unicode filename
+    ✓  Reads file with spaces in name
+    ✓  Reads hidden file (.env)
+    ✓  Reads .gitkeep file
+
+  [TOCTOU]  2/2 passed
+    ✓  Symlink swap attack is denied
+    ✓  Repeated reads return consistent results
+
+  [Truncation]  6/6 passed
+    ✓  Command-level max_chars truncates output
+    ✓  Tool-level max_output_chars truncates output
+    ✓  Effective truncation limit is min(tool, command)
+    ✓  Truncation marker reserved within limit
+    ✓  Short content is not truncated
+    ✓  Content at exact limit is not truncated
+
+======================================================================
+  SUMMARY: 67/67 passed
+======================================================================
+
+Reports written to:
+  /Users/vishwajayawickrama/Codes/agent-harness-for-slms/test-end/report.txt
+  /Users/vishwajayawickrama/Codes/agent-harness-for-slms/test-end/report.md
