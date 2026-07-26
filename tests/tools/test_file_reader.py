@@ -64,15 +64,28 @@ def test_binary_file_is_detected(tmp_path: Path) -> None:
     assert "binary file" in result.content
 
 
-def test_output_truncation_works(tmp_path: Path) -> None:
-    file = tmp_path / "long.txt"
-    file.write_text("a" * 1000, encoding="utf-8")
+def test_extensionless_binary_file_is_detected(tmp_path: Path) -> None:
+    file = tmp_path / "data"
+    file.write_bytes(b"\x00\x01\x02\x03")
 
-    result = FileReaderTool(max_output_chars=100).read(
+    result = FileReaderTool().read(
+        FileReadCommand(path=Path("data"), repo_root=tmp_path)
+    )
+
+    assert result.binary is True
+    assert "binary file" in result.content
+
+
+def test_output_truncation_respects_tool_and_command_limits(tmp_path: Path) -> None:
+    file = tmp_path / "long.txt"
+    file.write_text("a" * 200, encoding="utf-8")
+
+    result = FileReaderTool(max_output_chars=150).read(
         FileReadCommand(path=Path("long.txt"), repo_root=tmp_path, max_chars=100)
     )
 
     assert result.truncated is True
+    assert len(result.content) <= 100
     assert "[truncated]" in result.content
 
 
@@ -83,6 +96,16 @@ def test_oversized_file_is_denied(tmp_path: Path) -> None:
     with pytest.raises(FilePolicyError, match="exceeds maximum size"):
         FileReaderTool(max_file_size=50).read(
             FileReadCommand(path=Path("big.txt"), repo_root=tmp_path)
+        )
+
+
+def test_oversized_binary_file_is_denied(tmp_path: Path) -> None:
+    file = tmp_path / "big.bin"
+    file.write_bytes(b"\x00" * 200)
+
+    with pytest.raises(FilePolicyError, match="exceeds maximum size"):
+        FileReaderTool(max_file_size=100).read(
+            FileReadCommand(path=Path("big.bin"), repo_root=tmp_path)
         )
 
 
@@ -105,7 +128,19 @@ def test_encoding_fallback_works(tmp_path: Path) -> None:
     )
 
     assert result.exists is True
-    assert "\ufffd" in result.content or "<?>" in result.content or "[truncated]" in result.content
+    assert "\ufffd" in result.content
+
+
+def test_json_mime_is_not_detected_as_binary(tmp_path: Path) -> None:
+    file = tmp_path / "manifest.json"
+    file.write_text('{"key": "value"}', encoding="utf-8")
+
+    result = FileReaderTool().read(
+        FileReadCommand(path=Path("manifest.json"), repo_root=tmp_path)
+    )
+
+    assert result.binary is False
+    assert result.content == '{"key": "value"}'
 
 
 def test_command_models_have_correct_fields() -> None:

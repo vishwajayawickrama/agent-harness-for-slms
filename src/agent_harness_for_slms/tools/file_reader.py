@@ -1,6 +1,9 @@
 """Controlled file reading tool with safety constraints."""
 
+import errno
 import mimetypes
+import os
+import stat
 from pathlib import Path
 
 from pydantic import BaseModel, Field
@@ -9,6 +12,7 @@ from agent_harness_for_slms.errors import FilePolicyError
 
 MAX_FILE_SIZE = 1_024 * 1_024
 MAX_OUTPUT_CHARS = 50_000
+TRUNCATION_MARKER = "\n[truncated]"
 BINARY_EXTENSIONS = {
     ".pyc",
     ".pyo",
@@ -65,6 +69,15 @@ BINARY_EXTENSIONS = {
     ".gitignore",
 }
 
+TEXT_LIKE_APP_TYPES = frozenset({
+    "application/json",
+    "application/javascript",
+    "application/xml",
+    "application/x-yaml",
+    "application/toml",
+    "application/x-toml",
+})
+
 
 class FileReadCommand(BaseModel):
     path: Path = Field(description="Path to the file to read, relative to the repository root.")
@@ -97,7 +110,9 @@ class FileReaderTool:
     def read(self, command: FileReadCommand) -> FileReadResult:
         resolved = self._resolve_path(command.path, command.repo_root)
 
-        if not resolved.exists():
+        try:
+            fd = os.open(resolved, os.O_RDONLY | os.O_NOFOLLOW)
+        except FileNotFoundError:
             return FileReadResult(
                 path=command.path,
                 repo_root=command.repo_root,
@@ -108,33 +123,53 @@ class FileReaderTool:
                 binary=False,
                 size_bytes=0,
             )
+        except OSError as exc:
+            if exc.errno == errno.ELOOP:
+                raise FilePolicyError(f"Symlink denied: {command.path}")
+            raise FilePolicyError(f"Cannot open file: {command.path}")
 
-        if not resolved.is_file():
-            raise FilePolicyError(f"Path is not a file: {command.path}")
+        try:
+            stat_result = os.fstat(fd)
+            size = stat_result.st_size
 
-        size = resolved.stat().st_size
-        if self._is_binary(resolved):
-            return FileReadResult(
-                path=command.path,
-                repo_root=command.repo_root,
-                exists=True,
-                content=f"[binary file: {size} bytes]",
-                encoding=command.encoding,
-                truncated=False,
-                binary=True,
-                size_bytes=size,
-            )
+            if not stat.S_ISREG(stat_result.st_mode):
+                raise FilePolicyError(f"Path is not a file: {command.path}")
 
-        if size > self.max_file_size:
-            raise FilePolicyError(
-                f"File exceeds maximum size ({size} > {self.max_file_size} bytes): {command.path}"
-            )
+            if size > self.max_file_size:
+                raise FilePolicyError(
+                    f"File exceeds maximum size ({size} > {self.max_file_size} bytes): {command.path}"
+                )
 
-        raw_bytes = resolved.read_bytes()
+            header = os.read(fd, 512)
+            os.lseek(fd, 0, os.SEEK_SET)
+
+            if self._is_binary(resolved, header):
+                return FileReadResult(
+                    path=command.path,
+                    repo_root=command.repo_root,
+                    exists=True,
+                    content=f"[binary file: {size} bytes]",
+                    encoding=command.encoding,
+                    truncated=False,
+                    binary=True,
+                    size_bytes=size,
+                )
+
+            raw_bytes = b""
+            while True:
+                chunk = os.read(fd, 65536)
+                if not chunk:
+                    break
+                raw_bytes += chunk
+        finally:
+            os.close(fd)
+
         content = self._decode(raw_bytes, command.encoding)
-        truncated = len(content) > command.max_chars
+        effective_max = min(self.max_output_chars, command.max_chars)
+        truncated = len(content) > effective_max
         if truncated:
-            content = content[: command.max_chars] + "\n[truncated]"
+            keep = max(0, effective_max - len(TRUNCATION_MARKER))
+            content = content[:keep] + TRUNCATION_MARKER if keep > 0 else TRUNCATION_MARKER
 
         return FileReadResult(
             path=command.path,
@@ -158,12 +193,19 @@ class FileReaderTool:
             )
         return resolved
 
-    def _is_binary(self, path: Path) -> bool:
+    def _is_binary(self, path: Path, content_sample: bytes | None = None) -> bool:
         suffix = path.suffix.lower()
         if suffix in BINARY_EXTENSIONS:
             return True
+
         mime_type, _ = mimetypes.guess_type(path)
-        return mime_type is not None and not mime_type.startswith("text/")
+        if mime_type is not None:
+            if mime_type in TEXT_LIKE_APP_TYPES:
+                return False
+            if not mime_type.startswith("text/"):
+                return True
+
+        return bool(content_sample and b"\x00" in content_sample)
 
     def _decode(self, raw_bytes: bytes, encoding: str) -> str:
         try:
